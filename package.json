@@ -1,0 +1,24 @@
+{
+  "name": "manganim",
+  "version": "1.0.0",
+  "description": "API service for watching Indonesian subtitled anime and manga [Ongoing]",
+  "main": "index.js",
+  "scripts": {
+    "devstart": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Maxi Aditya",
+  "license": "GNU General Public License v3.0",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "axios-cookiejar-support": "^3.0.0",
+    "cheerio": "^1.0.0-rc.10",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "helmet": "^5.0.2",
+    "nodemon": "^2.0.16",
+    "request": "^2.88.2",
+    "util": "^0.12.4"
+  }
+}
