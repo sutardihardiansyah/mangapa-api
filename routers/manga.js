@@ -63,17 +63,18 @@ router.get("/", async (req, res) => {
       const $ = cheerio.load(response.data);
       const element = $(".mainholder");
       let manga_list = [];
-      let title, type, updated_on, endpoint, thumb, chapter, chapter_endpoint;
+      let title, type, updated_on, endpoint, thumb, chapter, chapter_endpoint, chapter_number;
 
       element.find(".postbody > .bixbox > .listupd > .styletwo").each((idx, el) => {
         
         title = $(el).find(".luf > a").find("h4").text().trim();
         endpoint = $(el).find("a").attr("href").replace(replaceMangaPage2[1], "");
         type = $(el).find(".imgu > a").find("span").attr("class").replace("type ", "");
-        thumb = $(el).find(".imgu > a").find("img").attr("src");
+        thumb = $(el).find(".imgu > a").find("img").attr("src").replace("resize=100,145", "resize=300,385");
         updated_on = $(el).find(".luf > ul > li:first").find("span").text();
         chapter = $(el).find(".luf > ul > li:first").find("a").text();
-        chapter_endpoint = $(el).find(".luf > ul > li:first").find("a").attr("href");
+        chapter_number = $(el).find(".luf > ul > li:first").find("a").text().replace("Chapter ", "");
+        chapter_endpoint = $(el).find(".luf > ul > li:first").find("a").attr("href").replace(replaceMangaPage2[0], "");
         manga_list.push({
           title,
           thumb,
@@ -81,7 +82,8 @@ router.get("/", async (req, res) => {
           updated_on,
           endpoint,
           chapter,
-          chapter_endpoint
+          chapter_endpoint,
+          chapter_number
         });
       });
       const next = element.find(".postbody > .bixbox > .listupd > .hpage a").attr("href").replace("https://mangakita.net/page/", "")
@@ -247,17 +249,25 @@ router.get("/detail/:slug", async (req, res) => {
     /* Get Title, Type, Author, Status */
     const elementData = "#content > .wrapper > .terebody > .postbody > .hentry >"
     obj.title = $(elementData +" .seriestucon > .seriestuheader > h1").text().trim();
-    obj.synopsis = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestuhead > .entry-content > p:first").find("span").text();
+    obj.second_title = $(elementData +" .seriestucon > .seriestuheader > .seriestualt").text().trim();
+    let textSynopsis = "";
+    $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestuhead > .entry-content > p").each( (i, el) => {
+      textSynopsis += `<span class=mt-1>`+$(el).text()+`</span> <br>`;
+    })
+    obj.synopsis = textSynopsis
+    // obj.synopsis = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestuhead > .entry-content > p:first").find("span").text();
+    obj.rating = $(elementData +" .seriestucon > .seriestucontent > .seriestucontl .rating-prc .num").text()
+    obj.followed = $(elementData +" .seriestucon > .seriestucontent > .seriestucontl .bmc").text().replace("Followed by ", "").replace(" people", "")
     obj.thumb = $(elementData +" .seriestucon > .seriestucontent > .seriestucontl > .thumb > img").attr("src");
-     obj.type = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(2)").find("td:nth-child(2)").text();
-      obj.author = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(4)").find("td:nth-child(2)").text()
-     obj.status = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:first").find("td:nth-child(2)").text();
-     obj.updated_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(9)").find("td:nth-child(2)").text().trim();
-     obj.released = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(3)").find("td:nth-child(2)").text();
-     obj.posted_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(8)").find("td:nth-child(2)").text().trim();
-     obj.manga_endpoint = slug;
-     obj.first_chapter = "boku-no-hero-academia-chapter-1/";
-     obj.last_chapter = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestuhead > .lastend > div:nth-child(2)").find("a").attr("href").replace(replaceMangaPage2[0], "")
+    obj.type = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(2)").find("td:nth-child(2)").text();
+    obj.author = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(4)").find("td:nth-child(2)").text()
+    obj.status = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:first").find("td:nth-child(2)").text();
+    obj.updated_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(9)").find("td:nth-child(2)").text().trim();
+    obj.released = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(3)").find("td:nth-child(2)").text();
+    obj.posted_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(8)").find("td:nth-child(2)").text().trim();
+    obj.manga_endpoint = slug;
+    obj.first_chapter = "boku-no-hero-academia-chapter-1/";
+    obj.last_chapter = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestuhead > .lastend > div:nth-child(2)").find("a").attr("href").replace(replaceMangaPage2[0], "")
     // Get Genre List
     element.find(".seriestugenre > a").each((idx, el) => {
       let genre_name = $(el).text();
@@ -273,12 +283,14 @@ router.get("/detail/:slug", async (req, res) => {
       .find("li")
       .each((index, el) => {
         let chapter_title = $(el).find("span:first").text().trim();
+        let chapter_date = $(el).find("span:last").text().trim();
         let chapter_endpoint = $(el).find("a").attr("href");
         if (chapter_endpoint !== undefined) {
-          const rep = chapter_endpoint.replace("/ch/", "");
+          const rep = chapter_endpoint.replace(replaceMangaPage2[0], "");
           chapter.push({
             chapter_title,
             chapter_endpoint: rep,
+            chapter_date
           });
         }
         obj.chapter = chapter;
@@ -309,6 +321,17 @@ router.get("/chapter/:endpoint", async (req, res) => {
     obj.chapter_name = endpoint.split('-').join(' ').trim()
 
     obj.title = $('#content h1').text().trim()
+    
+    obj.next = false;
+    obj.prev = ""
+    if($('#content .navig a:nth-child(4)').text()){
+        obj.next = $('#content .navig a:nth-child(4)').attr("href").replace("https://komikindo.id/", "")
+    }
+    if($('#content .navig a:nth-child(2)').text()){
+        obj.prev = $('#content .navig a:nth-child(1)').attr("href").replace("https://komikindo.id/", "")
+    }
+    obj.chapter_list = $('#content .navig a:nth-child(2)').attr("href").replace("https://komikindo.id/komik/", "")
+    obj.download = $('#content .navig a:nth-child(3)').attr("href").replace("https://komikindo.id/komik/", "")
     obj.image = $('.seriestucontent > .seriestucontl > .thumb').find("img").attr("src")
     
     const getPages = $('#chimg-auh img')

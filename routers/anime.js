@@ -67,8 +67,8 @@ router.get("/", async (req, res) => {
       $('.hothome').next().find(".excstf").children().each(function (i, e) {
         const anime = {
           title: $(this).find('.eggtitle').text(),
-          image_url: $(this).find('.bsx img').attr("src"),
-          detail_url: $(this).find('.bsx > a').attr("href"),
+          thumb: $(this).find('.bsx img').attr("src"),
+          enpoint: $(this).find('.bsx > a').attr("href"),
           episode : $(this).find('.eggepisode').text()
         };
         list_popular.push(anime)
@@ -87,10 +87,10 @@ router.get("/", async (req, res) => {
           posted_by: $(this).find('ul li:nth-child(2)').text().replace("Posted by: ", ""),
           released_on: $(this).find('ul li:nth-child(3)').text().replace("Released on: ", ""),
           series: $(this).find('ul li:nth-child(4)').text().replace("series: ", ""),
-          series_url: $(this).find('ul li:nth-child(4) a').attr("href"),
+          series_enpoint: $(this).find('ul li:nth-child(4) a').attr("href").replace(url+"anime/", ""),
           genres: $(this).find('ul li:nth-child(5) a').length,
-          image_url: $(this).find('.bsx img').attr("src"),
-          detail_url: $(this).find('.bsx > a').attr("href"),
+          thumb: $(this).find('.bsx img').attr("src"),
+          endpoint: $(this).find('h2 a').attr("href").replace(url, ""),
           episode : $(this).find('.eggepisode').text()
         };
         anime.genres = [];
@@ -152,6 +152,7 @@ router.get("/detail/:slug", async (req, res) => {
       data.season = $("#content .infox > .info-content > .spe > span:nth-child(5)").text().replace("Season: ", "");
       data.url_season = $("#content .infox > .info-content > .spe > span:nth-child(5) > a").attr("href").replace(replaceUrlPage[0]+"season/", "");
       data.type = $("#content .infox > .info-content > .spe > span:nth-child(6)").text().replace("Type: ", "");
+      data.url_video = $("#content .video-content .player-embed iframe").attr("src");
       
       let textSynopsis = "";
       $("#content .infox > .info-content > .desc > p").each( (i, el) => {

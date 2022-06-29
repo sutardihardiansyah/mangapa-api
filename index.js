@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const cors = require("cors");
 const helmet = require("helmet").default;
@@ -19,12 +19,12 @@ app.use("/", (req, res) => {
   res.send({
     status: true,
     message:
-      "For more info, check out https://github.com/tustoz/manganim",
+      "For more info, check out https://github.com/sutardihardiansyah/mangapa-api",
     find_me_on: {
-      tiktok: "https://tiktok.com/@tustoz",
-      facebook: "https://facebook.com/tustozy/",
-      instagram: "https://instagram.com/maxi.aditya",
-      github: "https://github.com/tustoz/manganim",
+      twitter : "https://twitter.com/sutardihrdsyh",
+      facebook : "https://www.facebook.com/sutardihardiansyah12/",
+      instagram: "https://instagram.com/sutardihardiansyah",
+      github: "https://github.com/sutardihardiansyah/mangapa-api",
     },
   });
 });
