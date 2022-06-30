@@ -89,7 +89,7 @@ router.get("/", async (req, res) => {
           series: $(this).find('ul li:nth-child(4)').text().replace("series: ", ""),
           series_enpoint: $(this).find('ul li:nth-child(4) a').attr("href").replace(url+"anime/", ""),
           genres: $(this).find('ul li:nth-child(5) a').length,
-          thumb: $(this).find('.bsx img').attr("src"),
+          thumb: $(this).find('.bsx img').attr("src").replace("resize=141,200", "resize=230,325"),
           endpoint: $(this).find('h2 a').attr("href").replace(url, ""),
           episode : $(this).find('.eggepisode').text()
         };

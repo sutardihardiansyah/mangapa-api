@@ -259,12 +259,39 @@ router.get("/detail/:slug", async (req, res) => {
     obj.rating = $(elementData +" .seriestucon > .seriestucontent > .seriestucontl .rating-prc .num").text()
     obj.followed = $(elementData +" .seriestucon > .seriestucontent > .seriestucontl .bmc").text().replace("Followed by ", "").replace(" people", "")
     obj.thumb = $(elementData +" .seriestucon > .seriestucontent > .seriestucontl > .thumb > img").attr("src");
-    obj.type = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(2)").find("td:nth-child(2)").text();
-    obj.author = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(4)").find("td:nth-child(2)").text()
-    obj.status = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:first").find("td:nth-child(2)").text();
-    obj.updated_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(9)").find("td:nth-child(2)").text().trim();
-    obj.released = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(3)").find("td:nth-child(2)").text();
-    obj.posted_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody > tr:nth-child(8)").find("td:nth-child(2)").text().trim();
+    
+    // Get Type
+    obj.type = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody td").filter(function() { 
+      return $.text([this]) == 'Type'; 
+    }).next().text()
+
+    // Get Author
+    obj.author = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody td").filter(function() { 
+      return $.text([this]) == 'Author'; 
+    }).next().text()
+
+    // Get Status
+    obj.status = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody td").filter(function() { 
+      return $.text([this]) == 'Status'; 
+    }).next().text();
+    
+    // Get Released
+    obj.released = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody td").filter(function() { 
+      return $.text([this]) == 'Released'; 
+    }).next().text()
+    
+
+    // Get Posted On
+    obj.posted_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody td").filter(function() { 
+      return $.text([this]) == 'Posted On'; 
+    }).next().text().trim()
+
+    // Get Updated On
+    obj.updated_on = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestucont > .seriestucontr > table > tbody td").filter(function() { 
+      return $.text([this]) == 'Updated On'; 
+    }).next().text().trim()
+
+
     obj.manga_endpoint = slug;
     obj.first_chapter = "boku-no-hero-academia-chapter-1/";
     obj.last_chapter = $(elementData +" .seriestucon > .seriestucontent > .seriestucontentr > .seriestuhead > .lastend > div:nth-child(2)").find("a").attr("href").replace(replaceMangaPage2[0], "")
