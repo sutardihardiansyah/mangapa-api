@@ -67,8 +67,8 @@ router.get("/", async (req, res) => {
       $('.hothome').next().find(".excstf").children().each(function (i, e) {
         const anime = {
           title: $(this).find('.eggtitle').text(),
-          thumb: $(this).find('.bsx img').attr("src"),
-          enpoint: $(this).find('.bsx > a').attr("href"),
+          thumb: $(this).find('.bsx img').attr("src").replace("resize=247,350", "resize=350,300"),
+          endpoint: $(this).find('.bsx > a').attr("href").replace("https://65.108.132.145/", ""),
           episode : $(this).find('.eggepisode').text()
         };
         list_popular.push(anime)
