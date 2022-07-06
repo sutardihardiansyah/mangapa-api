@@ -97,7 +97,7 @@ router.get("/", async (req, res) => {
         $(this).find('ul li:nth-child(5) a').each( (i, el) => {
           const genres = {
             title : $(el).text(),
-            url : $(el).attr("href")
+            url : $(el).attr("href").replace(url+'genres/', "")
           }
           anime.genres.push(genres)
         } )
