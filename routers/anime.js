@@ -138,6 +138,7 @@ router.get("/detail/:slug", async (req, res) => {
       const data = {}
       // let imageUrl = $("img").attr("src").trim();
       data.title = $("#content h1.entry-title").text().trim();
+      data.second_title = $("#content .infox > .infolimit > span").text().trim();
       data.release_on = $("#content .year span.updated").text().trim();
       data.posted_by = $("#content .year .author a").text().trim();
       data.url_posted_by = $("#content .year .author a").attr("href").replace(replaceUrlPage[0]+"author/", "");
@@ -152,13 +153,16 @@ router.get("/detail/:slug", async (req, res) => {
       data.season = $("#content .infox > .info-content > .spe > span:nth-child(5)").text().replace("Season: ", "");
       data.url_season = $("#content .infox > .info-content > .spe > span:nth-child(5) > a").attr("href").replace(replaceUrlPage[0]+"season/", "");
       data.type = $("#content .infox > .info-content > .spe > span:nth-child(6)").text().replace("Type: ", "");
+      data.episode = $("#content .infox > .info-content > .spe > span:nth-child(7)").text().replace("Episodes: ", "")
+      data.fansub = $("#content .infox > .info-content > .spe > span:nth-child(8)").text().replace("Fansub: ", "")
+      data.rating = $("#content .infox > .rating > strong").text().replace("Rating ", "");
       data.url_video = $("#content .video-content .player-embed iframe").attr("src");
       
       let textSynopsis = "";
       $("#content .infox > .info-content > .desc > p").each( (i, el) => {
         textSynopsis += $(el).text() + "<br>"
       })
-      data.synopsis = textSynopsis
+      data.synopsis = textSynopsis == "" ? $("#content .infox > .info-content > .desc").text().trim() : textSynopsis;
 
       
       data.genres = [];
