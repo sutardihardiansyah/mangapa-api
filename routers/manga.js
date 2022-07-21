@@ -86,11 +86,13 @@ router.get("/", async (req, res) => {
           chapter_number
         });
       });
+      
       const next = element.find(".postbody > .bixbox > .listupd > .hpage a").attr("href").replace("https://mangakita.net/page/", "")
       return res.status(200).json({
         status: true,
         message: "success",
         next : next,
+        prev : "",
         manga_list,
       });
     }

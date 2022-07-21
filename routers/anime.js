@@ -104,9 +104,91 @@ router.get("/", async (req, res) => {
         list_latest.push(anime)
         // console.log($(this).find('.bsx > a').attr("href"))
       })
+      
       const latest = {
         title : $('.latesthome h3').text(),
-        data : list_latest
+        data : list_latest,
+        prev : $('.latesthome').next().find(".hpage a.l").text() ? $('.latesthome').next().find(".hpage a.l").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : '',
+        next : $('.latesthome').next().find(".hpage a.r").text() ? $('.latesthome').next().find(".hpage a.r").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : ''
+      };
+
+      
+      return res.status(200).json({ 
+        status: true, message: "success", popular, latest 
+      });
+    }
+    return res.send({
+      message: response.status,
+      data: [],
+    });
+  } catch (err) {
+    res.send({
+      status: false,
+      message: err,
+      data: [],
+    });
+  }
+});
+
+router.get("/page/:pagenumber", async (req, res) => {
+  let pagenumber = req.params.pagenumber;
+  let Newurl =
+    pagenumber === "1"
+      ? url
+      : url + `page/${pagenumber}`;
+  console.log(Newurl);
+  try {
+    const response = await AxiosService(Newurl);
+    if (response.status === 200) {
+      const $ = cheerio.load(response.data);
+      
+      let list_popular = [];
+      $('.hothome').next().find(".excstf").children().each(function (i, e) {
+        const anime = {
+          title: $(this).find('.eggtitle').text(),
+          thumb: $(this).find('.bsx img').attr("src").replace("resize=247,350", "resize=350,300"),
+          endpoint: $(this).find('.bsx > a').attr("href").replace("https://65.108.132.145/", ""),
+          episode : $(this).find('.eggepisode').text()
+        };
+        list_popular.push(anime)
+      })
+
+      const popular = {
+        title : $('.hothome h3').text(),
+        data : list_popular
+      };
+
+      let list_latest = [];
+      $('.latesthome').next().find(".excstf").children().each(function (i, e) {
+        const anime = {
+          title: $(this).find('h2 a').text(),
+          status: $(this).find('ul li:first').text().replace("Status: ", ""),
+          posted_by: $(this).find('ul li:nth-child(2)').text().replace("Posted by: ", ""),
+          released_on: $(this).find('ul li:nth-child(3)').text().replace("Released on: ", ""),
+          series: $(this).find('ul li:nth-child(4)').text().replace("series: ", ""),
+          series_enpoint: $(this).find('ul li:nth-child(4) a').attr("href").replace(url+"anime/", ""),
+          genres: $(this).find('ul li:nth-child(5) a').length,
+          thumb: $(this).find('.bsx img').attr("src").replace("resize=141,200", "resize=230,325"),
+          endpoint: $(this).find('h2 a').attr("href").replace(url, ""),
+          episode : $(this).find('.eggepisode').text()
+        };
+        anime.genres = [];
+        $(this).find('ul li:nth-child(5) a').each( (i, el) => {
+          const genres = {
+            title : $(el).text(),
+            url : $(el).attr("href").replace(url+'genres/', "")
+          }
+          anime.genres.push(genres)
+        } )
+        list_latest.push(anime)
+        // console.log($(this).find('.bsx > a').attr("href"))
+      })
+      
+      const latest = {
+        title : $('.latesthome h3').text(),
+        data : list_latest,
+        prev : $('.latesthome').next().find(".hpage a.l").text() ? $('.latesthome').next().find(".hpage a.l").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : '',
+        next : $('.latesthome').next().find(".hpage a.r").text() ? $('.latesthome').next().find(".hpage a.r").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : ''
       };
 
       
