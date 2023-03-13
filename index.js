@@ -21,8 +21,8 @@ app.use("/", (req, res) => {
     message:
       "For more info, check out https://github.com/sutardihardiansyah/mangapa-api",
     find_me_on: {
-      twitter : "https://twitter.com/sutardihrdsyh",
-      facebook : "https://www.facebook.com/sutardihardiansyah12/",
+      twitter: "https://twitter.com/sutardihrdsyh",
+      facebook: "https://www.facebook.com/sutardihardiansyah12/",
       instagram: "https://instagram.com/sutardihardiansyah",
       github: "https://github.com/sutardihardiansyah/mangapa-api",
     },

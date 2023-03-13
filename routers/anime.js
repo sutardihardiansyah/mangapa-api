@@ -1,8 +1,11 @@
 const AxiosService = require("../helpers/axiosService");
 const router = require("express").Router();
 const cheerio = require("cheerio");
-const replaceUrlPage = ["https://65.108.132.145/", "https://65.108.132.145/anime/"];
-let url = "https://65.108.132.145/";
+const replaceUrlPage = [
+  "https://oploverz.co.in/",
+  "https://oploverz.co.in/anime/",
+];
+let url = "https://oploverz.co.in/";
 // home -------Done------
 router.get("/s", async (req, res) => {
   let url = "https://miownime.com/";
@@ -29,7 +32,12 @@ router.get("/s", async (req, res) => {
       });
 
       var detailUrlNew = detailUrl.filter(function (el) {
-        return el != '/ongoing/' && el != '/completed/' && el != '/movie/' && el != "https://miownime.com/";
+        return (
+          el != "/ongoing/" &&
+          el != "/completed/" &&
+          el != "/movie/" &&
+          el != "https://miownime.com/"
+        );
       });
 
       var data = [];
@@ -57,64 +65,112 @@ router.get("/s", async (req, res) => {
 });
 // home -------Done------
 router.get("/", async (req, res) => {
-  
   try {
     const response = await AxiosService(url);
     if (response.status === 200) {
       const $ = cheerio.load(response.data);
-      
+
       let list_popular = [];
-      $('.hothome').next().find(".excstf").children().each(function (i, e) {
-        const anime = {
-          title: $(this).find('.eggtitle').text(),
-          thumb: $(this).find('.bsx img').attr("src").replace("resize=247,350", "resize=350,300"),
-          endpoint: $(this).find('.bsx > a').attr("href").replace("https://65.108.132.145/", ""),
-          episode : $(this).find('.eggepisode').text()
-        };
-        list_popular.push(anime)
-      })
+      $(".hothome")
+        .next()
+        .find(".excstf")
+        .children()
+        .each(function (i, e) {
+          const anime = {
+            title: $(this).find(".eggtitle").text(),
+            thumb: $(this)
+              .find(".bsx img")
+              .attr("src")
+              .replace("resize=247,350", "resize=350,300"),
+            endpoint: $(this)
+              .find(".bsx > a")
+              .attr("href")
+              .replace("https://oploverz.co.in/", ""),
+            episode: $(this).find(".eggepisode").text(),
+          };
+          list_popular.push(anime);
+        });
 
       const popular = {
-        title : $('.hothome h3').text(),
-        data : list_popular
+        title: $(".hothome h3").text(),
+        data: list_popular,
       };
 
       let list_latest = [];
-      $('.latesthome').next().find(".excstf").children().each(function (i, e) {
-        const anime = {
-          title: $(this).find('h2 a').text(),
-          status: $(this).find('ul li:first').text().replace("Status: ", ""),
-          posted_by: $(this).find('ul li:nth-child(2)').text().replace("Posted by: ", ""),
-          released_on: $(this).find('ul li:nth-child(3)').text().replace("Released on: ", ""),
-          series: $(this).find('ul li:nth-child(4)').text().replace("series: ", ""),
-          series_enpoint: $(this).find('ul li:nth-child(4) a').attr("href").replace(url+"anime/", ""),
-          genres: $(this).find('ul li:nth-child(5) a').length,
-          thumb: $(this).find('.bsx img').attr("src").replace("resize=141,200", "resize=230,325"),
-          endpoint: $(this).find('h2 a').attr("href").replace(url, ""),
-          episode : $(this).find('.eggepisode').text()
-        };
-        anime.genres = [];
-        $(this).find('ul li:nth-child(5) a').each( (i, el) => {
-          const genres = {
-            title : $(el).text(),
-            url : $(el).attr("href").replace(url+'genres/', "")
-          }
-          anime.genres.push(genres)
-        } )
-        list_latest.push(anime)
-        // console.log($(this).find('.bsx > a').attr("href"))
-      })
-      
+      $(".latesthome")
+        .next()
+        .find(".excstf")
+        .children()
+        .each(function (i, e) {
+          const anime = {
+            title: $(this).find("h2 a").text(),
+            status: $(this).find("ul li:first").text().replace("Status: ", ""),
+            posted_by: $(this)
+              .find("ul li:nth-child(2)")
+              .text()
+              .replace("Posted by: ", ""),
+            released_on: $(this)
+              .find("ul li:nth-child(3)")
+              .text()
+              .replace("Released on: ", ""),
+            series: $(this)
+              .find("ul li:nth-child(4)")
+              .text()
+              .replace("series: ", ""),
+            series_enpoint: $(this)
+              .find("ul li:nth-child(4) a")
+              .attr("href")
+              .replace(url + "anime/", ""),
+            genres: $(this).find("ul li:nth-child(5) a").length,
+            thumb: $(this)
+              .find(".bsx img")
+              .attr("src")
+              .replace("resize=141,200", "resize=230,325"),
+            endpoint: $(this).find("h2 a").attr("href").replace(url, ""),
+            episode: $(this).find(".eggepisode").text(),
+          };
+          anime.genres = [];
+          $(this)
+            .find("ul li:nth-child(5) a")
+            .each((i, el) => {
+              const genres = {
+                title: $(el).text(),
+                url: $(el)
+                  .attr("href")
+                  .replace(url + "genres/", ""),
+              };
+              anime.genres.push(genres);
+            });
+          list_latest.push(anime);
+          // console.log($(this).find('.bsx > a').attr("href"))
+        });
+
       const latest = {
-        title : $('.latesthome h3').text(),
-        data : list_latest,
-        prev : $('.latesthome').next().find(".hpage a.l").text() ? $('.latesthome').next().find(".hpage a.l").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : '',
-        next : $('.latesthome').next().find(".hpage a.r").text() ? $('.latesthome').next().find(".hpage a.r").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : ''
+        title: $(".latesthome h3").text(),
+        data: list_latest,
+        prev: $(".latesthome").next().find(".hpage a.l").text()
+          ? $(".latesthome")
+              .next()
+              .find(".hpage a.l")
+              .attr("href")
+              .replace("https://65.108.132.145/page/", "")
+              .replace("/", "")
+          : "",
+        next: $(".latesthome").next().find(".hpage a.r").text()
+          ? $(".latesthome")
+              .next()
+              .find(".hpage a.r")
+              .attr("href")
+              .replace("https://65.108.132.145/page/", "")
+              .replace("/", "")
+          : "",
       };
 
-      
-      return res.status(200).json({ 
-        status: true, message: "success", popular, latest 
+      return res.status(200).json({
+        status: true,
+        message: "success",
+        popular,
+        latest,
       });
     }
     return res.send({
@@ -132,68 +188,114 @@ router.get("/", async (req, res) => {
 
 router.get("/page/:pagenumber", async (req, res) => {
   let pagenumber = req.params.pagenumber;
-  let Newurl =
-    pagenumber === "1"
-      ? url
-      : url + `page/${pagenumber}`;
+  let Newurl = pagenumber === "1" ? url : url + `page/${pagenumber}`;
   console.log(Newurl);
   try {
     const response = await AxiosService(Newurl);
     if (response.status === 200) {
       const $ = cheerio.load(response.data);
-      
+
       let list_popular = [];
-      $('.hothome').next().find(".excstf").children().each(function (i, e) {
-        const anime = {
-          title: $(this).find('.eggtitle').text(),
-          thumb: $(this).find('.bsx img').attr("src").replace("resize=247,350", "resize=350,300"),
-          endpoint: $(this).find('.bsx > a').attr("href").replace("https://65.108.132.145/", ""),
-          episode : $(this).find('.eggepisode').text()
-        };
-        list_popular.push(anime)
-      })
+      $(".hothome")
+        .next()
+        .find(".excstf")
+        .children()
+        .each(function (i, e) {
+          const anime = {
+            title: $(this).find(".eggtitle").text(),
+            thumb: $(this)
+              .find(".bsx img")
+              .attr("src")
+              .replace("resize=247,350", "resize=350,300"),
+            endpoint: $(this)
+              .find(".bsx > a")
+              .attr("href")
+              .replace("https://65.108.132.145/", ""),
+            episode: $(this).find(".eggepisode").text(),
+          };
+          list_popular.push(anime);
+        });
 
       const popular = {
-        title : $('.hothome h3').text(),
-        data : list_popular
+        title: $(".hothome h3").text(),
+        data: list_popular,
       };
 
       let list_latest = [];
-      $('.latesthome').next().find(".excstf").children().each(function (i, e) {
-        const anime = {
-          title: $(this).find('h2 a').text(),
-          status: $(this).find('ul li:first').text().replace("Status: ", ""),
-          posted_by: $(this).find('ul li:nth-child(2)').text().replace("Posted by: ", ""),
-          released_on: $(this).find('ul li:nth-child(3)').text().replace("Released on: ", ""),
-          series: $(this).find('ul li:nth-child(4)').text().replace("series: ", ""),
-          series_enpoint: $(this).find('ul li:nth-child(4) a').attr("href").replace(url+"anime/", ""),
-          genres: $(this).find('ul li:nth-child(5) a').length,
-          thumb: $(this).find('.bsx img').attr("src").replace("resize=141,200", "resize=230,325"),
-          endpoint: $(this).find('h2 a').attr("href").replace(url, ""),
-          episode : $(this).find('.eggepisode').text()
-        };
-        anime.genres = [];
-        $(this).find('ul li:nth-child(5) a').each( (i, el) => {
-          const genres = {
-            title : $(el).text(),
-            url : $(el).attr("href").replace(url+'genres/', "")
-          }
-          anime.genres.push(genres)
-        } )
-        list_latest.push(anime)
-        // console.log($(this).find('.bsx > a').attr("href"))
-      })
-      
+      $(".latesthome")
+        .next()
+        .find(".excstf")
+        .children()
+        .each(function (i, e) {
+          const anime = {
+            title: $(this).find("h2 a").text(),
+            status: $(this).find("ul li:first").text().replace("Status: ", ""),
+            posted_by: $(this)
+              .find("ul li:nth-child(2)")
+              .text()
+              .replace("Posted by: ", ""),
+            released_on: $(this)
+              .find("ul li:nth-child(3)")
+              .text()
+              .replace("Released on: ", ""),
+            series: $(this)
+              .find("ul li:nth-child(4)")
+              .text()
+              .replace("series: ", ""),
+            series_enpoint: $(this)
+              .find("ul li:nth-child(4) a")
+              .attr("href")
+              .replace(url + "anime/", ""),
+            genres: $(this).find("ul li:nth-child(5) a").length,
+            thumb: $(this)
+              .find(".bsx img")
+              .attr("src")
+              .replace("resize=141,200", "resize=230,325"),
+            endpoint: $(this).find("h2 a").attr("href").replace(url, ""),
+            episode: $(this).find(".eggepisode").text(),
+          };
+          anime.genres = [];
+          $(this)
+            .find("ul li:nth-child(5) a")
+            .each((i, el) => {
+              const genres = {
+                title: $(el).text(),
+                url: $(el)
+                  .attr("href")
+                  .replace(url + "genres/", ""),
+              };
+              anime.genres.push(genres);
+            });
+          list_latest.push(anime);
+          // console.log($(this).find('.bsx > a').attr("href"))
+        });
+
       const latest = {
-        title : $('.latesthome h3').text(),
-        data : list_latest,
-        prev : $('.latesthome').next().find(".hpage a.l").text() ? $('.latesthome').next().find(".hpage a.l").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : '',
-        next : $('.latesthome').next().find(".hpage a.r").text() ? $('.latesthome').next().find(".hpage a.r").attr("href").replace("https://65.108.132.145/page/", "").replace("/", "") : ''
+        title: $(".latesthome h3").text(),
+        data: list_latest,
+        prev: $(".latesthome").next().find(".hpage a.l").text()
+          ? $(".latesthome")
+              .next()
+              .find(".hpage a.l")
+              .attr("href")
+              .replace("https://65.108.132.145/page/", "")
+              .replace("/", "")
+          : "",
+        next: $(".latesthome").next().find(".hpage a.r").text()
+          ? $(".latesthome")
+              .next()
+              .find(".hpage a.r")
+              .attr("href")
+              .replace("https://65.108.132.145/page/", "")
+              .replace("/", "")
+          : "",
       };
 
-      
-      return res.status(200).json({ 
-        status: true, message: "success", popular, latest 
+      return res.status(200).json({
+        status: true,
+        message: "success",
+        popular,
+        latest,
       });
     }
     return res.send({
@@ -212,80 +314,135 @@ router.get("/page/:pagenumber", async (req, res) => {
 // detail -------  ------
 router.get("/detail/:slug", async (req, res) => {
   const slug = req.params.slug;
- 
+
   try {
-    const response = await AxiosService(url+slug);
+    const response = await AxiosService(url + slug);
     if (response.status === 200) {
       const $ = cheerio.load(response.data);
-      const data = {}
+      const data = {};
       // let imageUrl = $("img").attr("src").trim();
       data.title = $("#content h1.entry-title").text().trim();
-      data.second_title = $("#content .infox > .infolimit > span").text().trim();
+      data.second_title = $("#content .infox > .infolimit > span")
+        .text()
+        .trim();
       data.release_on = $("#content .year span.updated").text().trim();
       data.posted_by = $("#content .year .author a").text().trim();
-      data.url_posted_by = $("#content .year .author a").attr("href").replace(replaceUrlPage[0]+"author/", "");
+      data.url_posted_by = $("#content .year .author a")
+        .attr("href")
+        .replace(replaceUrlPage[0] + "author/", "");
       data.series = $("#content .year > a").text();
-      data.url_series = $("#content .year > a").attr("href").replace(replaceUrlPage[1], "");
+      data.url_series = $("#content .year > a")
+        .attr("href")
+        .replace(replaceUrlPage[1], "");
       data.thumb = $("#content .thumb > img").attr("src");
-      data.status = $("#content .infox > .info-content > .spe > span:first").text().replace("Status: ", "");
-      data.studio = $("#content .infox > .info-content > .spe > span:nth-child(2)").text().replace("Studio: ", "");
-      data.url_studio = $("#content .infox > .info-content > .spe > span:nth-child(2) > a").attr("href").replace(replaceUrlPage[0]+"studio/", "");
-      data.released = $("#content .infox > .info-content > .spe > span:nth-child(3)").text().replace("Released: ", "");
-      data.duration = $("#content .infox > .info-content > .spe > span:nth-child(4)").text().replace("Duration: ", "");
-      data.season = $("#content .infox > .info-content > .spe > span:nth-child(5)").text().replace("Season: ", "");
-      data.url_season = $("#content .infox > .info-content > .spe > span:nth-child(5) > a").attr("href").replace(replaceUrlPage[0]+"season/", "");
-      data.type = $("#content .infox > .info-content > .spe > span:nth-child(6)").text().replace("Type: ", "");
-      data.episode = $("#content .infox > .info-content > .spe > span:nth-child(7)").text().replace("Episodes: ", "")
-      data.fansub = $("#content .infox > .info-content > .spe > span:nth-child(8)").text().replace("Fansub: ", "")
-      data.rating = $("#content .infox > .rating > strong").text().replace("Rating ", "");
-      data.url_video = $("#content .video-content .player-embed iframe").attr("src");
-      
+      data.status = $("#content .infox > .info-content > .spe > span:first")
+        .text()
+        .replace("Status: ", "");
+      data.studio = $(
+        "#content .infox > .info-content > .spe > span:nth-child(2)"
+      )
+        .text()
+        .replace("Studio: ", "");
+      data.url_studio = $(
+        "#content .infox > .info-content > .spe > span:nth-child(2) > a"
+      )
+        .attr("href")
+        .replace(replaceUrlPage[0] + "studio/", "");
+      data.released = $(
+        "#content .infox > .info-content > .spe > span:nth-child(3)"
+      )
+        .text()
+        .replace("Released: ", "");
+      data.duration = $(
+        "#content .infox > .info-content > .spe > span:nth-child(4)"
+      )
+        .text()
+        .replace("Duration: ", "");
+      data.season = $(
+        "#content .infox > .info-content > .spe > span:nth-child(5)"
+      )
+        .text()
+        .replace("Season: ", "");
+      data.url_season = $(
+        "#content .infox > .info-content > .spe > span:nth-child(5) > a"
+      )
+        .attr("href")
+        .replace(replaceUrlPage[0] + "season/", "");
+      data.type = $(
+        "#content .infox > .info-content > .spe > span:nth-child(6)"
+      )
+        .text()
+        .replace("Type: ", "");
+      data.episode = $(
+        "#content .infox > .info-content > .spe > span:nth-child(7)"
+      )
+        .text()
+        .replace("Episodes: ", "");
+      data.fansub = $(
+        "#content .infox > .info-content > .spe > span:nth-child(8)"
+      )
+        .text()
+        .replace("Fansub: ", "");
+      data.rating = $("#content .infox > .rating > strong")
+        .text()
+        .replace("Rating ", "");
+      data.url_video = $("#content .video-content .player-embed iframe").attr(
+        "src"
+      );
+
       let textSynopsis = "";
-      $("#content .infox > .info-content > .desc > p").each( (i, el) => {
-        textSynopsis += $(el).text() + "<br>"
-      })
-      data.synopsis = textSynopsis == "" ? $("#content .infox > .info-content > .desc").text().trim() : textSynopsis;
+      $("#content .infox > .info-content > .desc > p").each((i, el) => {
+        textSynopsis += $(el).text() + "<br>";
+      });
+      data.synopsis =
+        textSynopsis == ""
+          ? $("#content .infox > .info-content > .desc").text().trim()
+          : textSynopsis;
 
-      
       data.genres = [];
-      $("#content .infox > .info-content > .genxed > a").each( (i, el) => {
-          const genres = {
-            title : $(el).text(),
-            url : $(el).attr("href").replace(replaceUrlPage[0]+"genres/", "")
-          }
-          data.genres.push(genres)
-      } )
+      $("#content .infox > .info-content > .genxed > a").each((i, el) => {
+        const genres = {
+          title: $(el).text(),
+          url: $(el)
+            .attr("href")
+            .replace(replaceUrlPage[0] + "genres/", ""),
+        };
+        data.genres.push(genres);
+      });
 
-      data.download = []
+      data.download = [];
 
-      $("#content .mctnx > .soraddlx").each( (i, elParent) => {
+      $("#content .mctnx > .soraddlx").each((i, elParent) => {
         const types = {
-          type : $(elParent).find("h3").text(),
-        }
+          type: $(elParent).find("h3").text(),
+        };
 
-        types.data_links = []
-        $(elParent).find(".soraurlx").each( (i, el) => {
-          
-          const dataLinks = {
-            resolusi : $(el).find("strong").text(),
-          }
-  
-          dataLinks.data_url = []
-          $(el).find("a").each( (ind, element) => {
-            const dataUrl  = {
-              url_name : $(element).text(),
-              url_download : $(element).attr("href")
-            }
-  
-            dataLinks.data_url.push(dataUrl)
-          })
-  
-          types.data_links.push(dataLinks)
-        })
+        types.data_links = [];
+        $(elParent)
+          .find(".soraurlx")
+          .each((i, el) => {
+            const dataLinks = {
+              resolusi: $(el).find("strong").text(),
+            };
 
-        data.download.push(types)
-      })
-      
+            dataLinks.data_url = [];
+            $(el)
+              .find("a")
+              .each((ind, element) => {
+                const dataUrl = {
+                  url_name: $(element).text(),
+                  url_download: $(element).attr("href"),
+                };
+
+                dataLinks.data_url.push(dataUrl);
+              });
+
+            types.data_links.push(dataLinks);
+          });
+
+        data.download.push(types);
+      });
+
       // episodes == undefined || episodes == null
       //   ? (episodes = "Ongoing")
       //   : (episodes = $("div > div > ul > li.Episodex").text().substring(17));
@@ -297,7 +454,7 @@ router.get("/detail/:slug", async (req, res) => {
       //     synopsis[i] += $(this).text();
       //   });
       // }
-      
+
       // var data = [];
       // for (let i = 0; i < 1; i++) {
       //   const detail = {
@@ -317,12 +474,11 @@ router.get("/detail/:slug", async (req, res) => {
       //   };
       //   data.push(detail);
       // }
-     
-      
-       return res.status(200).json({ 
-        status: true, 
-        message: "success", 
-        data
+
+      return res.status(200).json({
+        status: true,
+        message: "success",
+        data,
       });
     }
     return res.send({
@@ -387,7 +543,7 @@ router.get("/old-detail/:param", async (req, res) => {
           synopsis[i] += $(this).text();
         });
       }
-      
+
       var data = [];
       for (let i = 0; i < 1; i++) {
         const detail = {
@@ -425,45 +581,70 @@ router.get("/old-detail/:param", async (req, res) => {
 // search -------Done------
 router.get("/search/:param", async (req, res) => {
   let param = req.params.param;
-  let url = `https://miownime.com/?s=${param}`;
+  let url = `https://oploverz.co.in/?s=${param}`;
 
   try {
     const response = await AxiosService(url);
+    const $ = cheerio.load(response.data);
+    const element = $("#content");
+    const elements = $("body");
+
+    console.log(elements.find(".searchx").find("form #s").val("sdsdas"));
+    let thumb, title, endpoint, type, upload_on;
+    let data_list = [];
+    let prev = "";
+    let next = "";
+
     if (response.status === 200) {
-      const $ = cheerio.load(response.data);
-
-      let titles = [];
-      let imageUrl = [];
-      let detailUrl = [];
-
-      $("div > div.out-thumb > h2 > a").each(function (i, e) {
-        titles[i] = $(this).text();
-      });
-
-      $("div > a > img").each(function (i, e) {
-        imageUrl[i] = $(this).attr("src");
-      });
-
-      $("div > a").each(function (i, e) {
-        detailUrl[i] = $(this).attr("href");
-      });
-
-      var data = [];
-      for (let i = 0; i < titles.length; i++) {
-        const anime = {
-          title: titles[i],
-          imageUrl: imageUrl[i],
-          detailUrl: detailUrl[i],
-        };
-        data.push(anime);
-      }
-      return res.status(200).json({ status: true, message: "success", data });
+      console.log(element.find(".listupd").children().length);
     }
-    return res.send({
-      message: response.status,
-      data: [],
+
+    if (
+      element.find(".listupd").children().length > 0 &&
+      element.find(".listupd h3").text() != "Not Found"
+    ) {
+      element
+        .find(".listupd")
+        .children()
+        .each((idx, el) => {
+          title = $(el).find("a").find(".tt > h2").text().trim();
+          endpoint = $(el)
+            .find("a")
+            .attr("href")
+            .replace(replaceUrlPage[1], "");
+          thumb = $(el).find("div.bsx > a > .limit > img").attr("src");
+          data_list.push({
+            title,
+            thumb,
+            endpoint,
+          });
+        });
+
+      if (element.find(".hpage .l").text() != "") {
+        let replacePrevUrl = element
+          .find(".hpage .l")
+          .attr("href")
+          .replace("&status=completed&type=&order=", "");
+        prev = replacePrevUrl.replace("?page=", "");
+      }
+      if (element.find(".hpage .l").text() != "") {
+        let replaceNextUrl = element
+          .find(".hpage .r")
+          .attr("href")
+          .replace("&status=completed&type=&order=", "");
+        next = replaceNextUrl.replace("?page=", "");
+      }
+    }
+
+    res.json({
+      status: true,
+      message: "success",
+      data_list,
+      prev,
+      next,
     });
   } catch (err) {
+    console.log(err);
     res.send({
       status: false,
       message: err,
