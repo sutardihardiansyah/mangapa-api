@@ -19,7 +19,7 @@ app.use("/", (req, res) => {
   res.send({
     status: true,
     message:
-      "For more info, check out https://github.com/sutardihardiansyah/mangapa-api",
+      "For more info, check outs https://github.com/sutardihardiansyah/mangapa-api",
     find_me_on: {
       twitter: "https://twitter.com/sutardihrdsyh",
       facebook: "https://www.facebook.com/sutardihardiansyah12/",
