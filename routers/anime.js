@@ -207,7 +207,7 @@ router.get("/page/:pagenumber", async (req, res) => {
             endpoint: $(this)
               .find(".bsx > a")
               .attr("href")
-              .replace("https://65.108.132.145/", ""),
+              .replace("https://oploverz.tv/", ""),
             episode: $(this).find(".eggepisode").text(),
           };
           list_popular.push(anime);
@@ -275,7 +275,7 @@ router.get("/page/:pagenumber", async (req, res) => {
               .next()
               .find(".hpage a.l")
               .attr("href")
-              .replace("https://65.108.132.145/page/", "")
+              .replace("https://oploverz.tv/page/", "")
               .replace("/", "")
           : "",
         next: $(".latesthome").next().find(".hpage a.r").text()
@@ -283,7 +283,7 @@ router.get("/page/:pagenumber", async (req, res) => {
               .next()
               .find(".hpage a.r")
               .attr("href")
-              .replace("https://65.108.132.145/page/", "")
+              .replace("https://oploverz.tv/page/", "")
               .replace("/", "")
           : "",
       };
