@@ -1,11 +1,8 @@
 const AxiosService = require("../helpers/axiosService");
 const router = require("express").Router();
 const cheerio = require("cheerio");
-const replaceUrlPage = [
-  "https://oploverz.co.in/",
-  "https://oploverz.co.in/anime/",
-];
-let url = "https://oploverz.co.in/";
+const replaceUrlPage = ["https://oploverz.tv/", "https://oploverz.tv/anime/"];
+let url = "https://oploverz.tv/";
 // home -------Done------
 router.get("/s", async (req, res) => {
   let url = "https://miownime.com/";
@@ -85,7 +82,7 @@ router.get("/", async (req, res) => {
             endpoint: $(this)
               .find(".bsx > a")
               .attr("href")
-              .replace("https://oploverz.co.in/", ""),
+              .replace("https://oploverz.tv/", ""),
             episode: $(this).find(".eggepisode").text(),
           };
           list_popular.push(anime);
@@ -153,7 +150,7 @@ router.get("/", async (req, res) => {
               .next()
               .find(".hpage a.l")
               .attr("href")
-              .replace("https://65.108.132.145/page/", "")
+              .replace("https://oploverz.tv/page/", "")
               .replace("/", "")
           : "",
         next: $(".latesthome").next().find(".hpage a.r").text()
@@ -161,7 +158,7 @@ router.get("/", async (req, res) => {
               .next()
               .find(".hpage a.r")
               .attr("href")
-              .replace("https://65.108.132.145/page/", "")
+              .replace("https://oploverz.tv/page/", "")
               .replace("/", "")
           : "",
       };
@@ -581,7 +578,7 @@ router.get("/old-detail/:param", async (req, res) => {
 // search -------Done------
 router.get("/search/:param", async (req, res) => {
   let param = req.params.param;
-  let url = `https://oploverz.co.in/?s=${param}`;
+  let url = `https://oploverz.tv/?s=${param}`;
 
   try {
     const response = await AxiosService(url);

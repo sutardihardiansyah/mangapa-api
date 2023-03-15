@@ -9,8 +9,8 @@ const replaceMangaPage2 = [
 const AxiosService = require("../helpers/axiosService");
 
 //mangalist  -------Done------
-router.get("/sdfsdf", async (req, res) => {
-  let url = "https://data.komiku.id/pustaka/";
+router.get("/mangaku", async (req, res) => {
+  let url = "https://mangaku.vip";
 
   try {
     const response = await AxiosService(url);
@@ -472,7 +472,7 @@ router.get("/detail/:slug", async (req, res) => {
 
 //chapter detail ----done ----
 router.get("/chapter/:endpoint", async (req, res) => {
-  const url = "https://komikindo.id/";
+  const url = "https://komikindo.pro/";
   const endpoint = req.params.endpoint;
   // res.send(endpoint)
   try {
@@ -492,19 +492,19 @@ router.get("/chapter/:endpoint", async (req, res) => {
     if ($("#content .navig a:nth-child(4)").text()) {
       obj.next = $("#content .navig a:nth-child(4)")
         .attr("href")
-        .replace("https://komikindo.id/", "");
+        .replace("https://komikindo.pro/", "");
     }
     if ($("#content .navig a:nth-child(2)").text()) {
       obj.prev = $("#content .navig a:nth-child(1)")
         .attr("href")
-        .replace("https://komikindo.id/", "");
+        .replace("https://komikindo.pro/", "");
     }
     obj.chapter_list = $("#content .navig a:nth-child(2)")
       .attr("href")
-      .replace("https://komikindo.id/komik/", "");
+      .replace("https://komikindo.pro/komik/", "");
     obj.download = $("#content .navig a:nth-child(3)")
       .attr("href")
-      .replace("https://komikindo.id/komik/", "");
+      .replace("https://komikindo.pro/komik/", "");
     obj.image = $(".seriestucontent > .seriestucontl > .thumb")
       .find("img")
       .attr("src");
